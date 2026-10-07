@@ -74,44 +74,38 @@ Mage), quests, harvesting, crafting and an inn. Its four scenes, in the order th
 
 ## 5. Add the scenes to the build
 
-Open **File → Build Profiles** and select **Scene List** at the top left. Drag the four
-scenes from `Assets/OpenMMORPG/Demo/Scenes` into the list, and make sure `00Init` is at the
-top. The game always starts from the first scene in the list.
+For the Verdant Isle demo, the demo build profile already contains the required scenes. If you want to check them or add your own scenes, open **File → Build Profiles** and select **Scene List** at the top left. Drag the scenes from `Assets/OpenMMORPG/Demo/Scenes` into the list, and make sure `00Init` is at the top. The game always starts from the first scene in the list.
 
 ![The Build Profiles window with Scene List selected, listing the demo's four scenes with 00Init first.](./images/getting-started/scene-list.png)
 
 ## 6. Build the map server
 
-Open MMORPG is an MMO framework, and the demo runs the way a live game does: as several
-servers working together. When you press Play on `00Init`, the editor starts the login,
-central, database and map-spawn servers, and then the game client. The one thing it does not
-run is a map. Every map runs as a server process of its own, and the map-spawn server
-launches those processes from a **build of your project**.
+Open MMORPG is an MMO framework, and the demo runs the way a live game does: as several servers working together. When you press Play on `00Init`, the editor starts the login, central, database and map-spawn servers, and then the game client. Every map runs as an independent server process of its own, launched by the map-spawn server from a compiled binary of your project located at `builds/OpenMMORPG.exe`.
 
-So build the project once before you play:
+### One-Click Demo Build
 
-1. In **File → Build Profiles**, select **Windows Server** and choose **Switch Platform**.
-   If Windows Server is missing, add **Dedicated Server Build Support** to your Unity
-   install from Unity Hub.
-2. Choose **Build**, make a folder named `builds` at the root of your project (beside
-   `Assets`), and save the build there as `OpenMMORPG.exe`.
-3. Select **Windows** again and choose **Switch Platform**, so the editor goes back to
-   running the game as a player would.
+Building the demo map server is completely automated:
 
-A plain **Windows** build also works as a map server, and needs no switching. It just takes
-longer, especially the first time, because it compiles graphics a server never draws.
+1. In the top menu, choose **Open MMORPG → Demo → Build Demo Map Server** (or open **Open MMORPG → Demo → Welcome** and click **Build Demo Map Server**).
+2. Unity will automatically compile the demo scenes directly into `builds/OpenMMORPG.exe`.
 
-`builds/OpenMMORPG.exe` is where the demo looks. The path is set on the
-**MapSpawnNetworkManager** object in `00Init`, which is a child of **MMOServerInstance**.
-**Override Exe Path** is used when you play in the editor, and **Spawn Exe Path** is used by
-a server you have built. Change them if you would rather build somewhere else.
+You do not need to switch build platforms, configure build profiles, or manually create folders.
+
+> **Rebuild after making game changes:** The map server is a compiled snapshot of your project. If you modify character classes, monsters, items, or map scenes, rebuild the map server by choosing **Build Demo Map Server** again. Otherwise the editor client and map server will disagree on game data and reject connections.
+
+---
+
+### Building for Custom Projects
+
+When you move beyond the demo to build your own game:
+
+1. **Scene List**: Ensure your own initialization and map scenes are added to **File → Build Profiles** or your custom Build Profile.
+2. **Executable Paths**: On the **MapSpawnNetworkManager** component in your initialization scene (a child of `MMOServerInstance` in `00Init`):
+   * **Override Exe Path**: The path to the map server binary launched while testing in the Unity Editor (defaults to `./builds/OpenMMORPG.exe`).
+   * **Spawn Exe Path**: The path to the map server binary launched by dedicated standalone server builds.
+3. **Dedicated Server Profiles**: In **File → Build Profiles**, select **Windows Server** or **Linux Server** to build headless server binaries with the `DISABLE_ADDRESSABLES` define (see [Server Configuration & CLI](../mmo/server-configuration-and-cli.md)).
 
 ![The Map Spawn Network Manager in 00Init, with Spawn Exe Path and Override Exe Path highlighted, both set to ./builds/OpenMMORPG.exe.](./images/getting-started/override-exe-path.png)
-
-> **Rebuild it when you change the game.** The map server is a snapshot of your project from
-> the moment you built it. After you change characters, monsters, items or the map scenes,
-> build it again. Otherwise the editor and the map server disagree about the game's
-> contents, and joining a map fails, often with an "Invalid character entity" error.
 
 ## 7. Play
 
