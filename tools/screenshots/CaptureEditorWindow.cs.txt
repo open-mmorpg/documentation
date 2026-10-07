@@ -1,0 +1,39 @@
+// Captures an open Unity editor window to a PNG, from the window's own back buffer, so it
+// works whatever else is on the screen. Paste the body into the Unity MCP bridge's
+// execute_code (or wrap it in a static editor method) and set the two values at the top.
+//
+// - `windowName` is the window's UnityEngine.Object name. Give a window you opened for a
+//   capture a unique name first (win.name = "DocsCapture") so it can be found again.
+// - For an Inspector, lock a floating InspectorWindow to the object instead of changing the
+//   selection: set `isLocked` false, call the internal `SetObjectsLocked(List<Object>)`,
+//   call `tracker.ForceRebuild()`, and capture in a LATER call: the Inspector rebuilds on
+//   the next editor tick, so a capture in the same call still shows the old object.
+// - Scroll an Inspector by setting `m_ScrollView.scrollOffset` before capturing.
+// - Folding the Transform component draws its header half-covered by the next one. Leave
+//   Transform unfolded in captures.
+// - GrabPixels returns the image upside down; the loop below flips it.
+
+string windowName = "DocsCapture";
+string outFile = "C:/path/to/raw/capture.png";
+
+var bf = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
+EditorWindow win = null;
+foreach (var o in Resources.FindObjectsOfTypeAll<EditorWindow>()) if (o.name == windowName) win = o;
+typeof(EditorWindow).GetMethod("RepaintImmediately", bf).Invoke(win, null);
+typeof(EditorWindow).GetMethod("RepaintImmediately", bf).Invoke(win, null);
+var parent = typeof(EditorWindow).GetField("m_Parent", bf).GetValue(win);
+float ppp = EditorGUIUtility.pixelsPerPoint;
+var viewPos = (Rect)parent.GetType().GetProperty("position", bf).GetValue(parent, null);
+int pw = Mathf.RoundToInt(viewPos.width * ppp), ph = Mathf.RoundToInt(viewPos.height * ppp);
+var rt = new RenderTexture(pw, ph, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+parent.GetType().GetMethod("GrabPixels", bf).Invoke(parent, new object[] { rt, new Rect(0, 0, pw, ph) });
+var prev = RenderTexture.active; RenderTexture.active = rt;
+var tex = new Texture2D(pw, ph, TextureFormat.RGB24, false);
+tex.ReadPixels(new Rect(0, 0, pw, ph), 0, 0); tex.Apply();
+RenderTexture.active = prev;
+var px = tex.GetPixels32(); var flipped = new Color32[px.Length];
+for (int y = 0; y < ph; y++) System.Array.Copy(px, y * pw, flipped, (ph - 1 - y) * pw, pw);
+tex.SetPixels32(flipped); tex.Apply();
+System.IO.File.WriteAllBytes(outFile, tex.EncodeToPNG());
+UnityEngine.Object.DestroyImmediate(tex); rt.Release();
+return "saved " + pw + "x" + ph;
