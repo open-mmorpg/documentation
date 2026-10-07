@@ -5,7 +5,8 @@ template: splash
 hero:
   tagline: A free, community-maintained Unity framework for building MMORPGs, with a playable demo island to learn from.
   image:
-    file: ../../assets/logo.png
+    alt: Open MMORPG
+    file: ../../assets/hero.jpg
   actions:
     - text: Get started
       link: /documentation/guide/getting-started/
