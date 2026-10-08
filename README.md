@@ -63,6 +63,11 @@ documentation, which is not licensed for reuse.
 
 [`tools/screenshots`](tools/screenshots) has the scripts used to capture and annotate them.
 
+## Community & Support
+
+Join our [Discord community](https://discord.gg/Czgrg4YGgq) for support, questions, and discussion.
+
 ## Licence
 
 The documentation is released under the [MIT License](LICENSE), like Open MMORPG itself.
+

@@ -35,3 +35,9 @@ Create your own folder, such as `Assets/MyGame`. Store your custom scenes, prefa
 
 ### How do I safely add custom gameplay logic?
 Use the **Dev Extension** system (see [Dev Extensions and Custom Code](../advanced/dev-extensions-and-custom-code.md)). Decorate your extension methods with `[DevExtMethods]` inside C# `partial` classes to hook into core engine events without modifying kit files.
+
+---
+
+### Where can I get help or ask questions?
+Join our [Discord community](https://discord.gg/Czgrg4YGgq) to get support, ask questions, and chat with other developers building with Open MMORPG.
+

@@ -28,6 +28,7 @@ export default defineConfig({
 			favicon: '/favicon.png',
 			social: [
 				{ icon: 'github', label: 'Open MMORPG on GitHub', href: 'https://github.com/open-mmorpg/OpenMMORPG' },
+				{ icon: 'discord', label: 'Open MMORPG on Discord', href: 'https://discord.gg/Czgrg4YGgq' },
 			],
 			editLink: { baseUrl: 'https://github.com/open-mmorpg/documentation/edit/main/' },
 			lastUpdated: true,

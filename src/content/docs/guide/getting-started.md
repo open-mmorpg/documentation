@@ -189,3 +189,5 @@ macOS that is the binary inside the app bundle, for example
 - [Game Instance](./game-instance.md): the component that holds the game's configuration.
 - [Game Database](./game-database.md): where your characters, items, skills and maps are registered.
 - [Before you build](./before-you-build.md): build settings for offline, client and server builds.
+- [Discord Community](https://discord.gg/Czgrg4YGgq): join our Discord for help, questions, and discussion with the community.
+

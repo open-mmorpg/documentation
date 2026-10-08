@@ -68,3 +68,10 @@ When diagnosing unexplained crashes or errors, inspect Unity's native `Player.lo
   ```
 * **macOS**:
   `~/Library/Logs/<CompanyName>/<ProductName>/Player.log`
+
+---
+
+## 5. Still Stuck? Join the Discord Community
+
+If you encounter an issue not covered in this guide or need troubleshooting assistance, hop into our [Discord community](https://discord.gg/Czgrg4YGgq) for support and discussion with the community.
+

@@ -15,6 +15,10 @@ hero:
       link: https://github.com/open-mmorpg/OpenMMORPG
       icon: external
       variant: minimal
+    - text: Discord Community
+      link: https://discord.gg/Czgrg4YGgq
+      icon: external
+      variant: minimal
 ---
 
 ## Start here
@@ -36,6 +40,10 @@ hero:
 - **[MMO Architecture](./mmo/server-architecture.md)**: Multi-server cluster roles, configurations, database sharding, and Linux deployment.
 - **[Advanced & Addons](./advanced/addon-manager.md)**: The in-editor Addon Manager, Dev Extensions, 2D game conversion, and custom data.
 - **[Troubleshooting & FAQ](./troubleshooting/troubleshooting-and-diagnostics.md)**: Common traps, server synchronization diagnostics, and quick fixes.
+
+## Community & Support
+
+Need help, have questions, or want to discuss development? Join our [Discord community](https://discord.gg/Czgrg4YGgq) for support from fellow developers and contributors.
 
 ## About these docs
 
