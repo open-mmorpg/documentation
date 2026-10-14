@@ -23,7 +23,7 @@ Open MMORPG is built natively for the **Universal Render Pipeline (URP)**.
 ---
 
 ### Can I build an offline or singleplayer game with Open MMORPG?
-**Yes.** Open MMORPG includes an **Offline-LAN** mode where host and client execute within a single runtime instance. Run **Open MMORPG → Build → Target → Setup For Offline-Lan Build** to configure your project symbols for standalone play.
+**Yes.** Open MMORPG includes an **Offline-LAN** mode where host and client execute within a single runtime instance. Run **Tools → Open MMORPG → Build → Target → Setup For Offline-Lan Build** to configure your project symbols for standalone play.
 
 ---
 

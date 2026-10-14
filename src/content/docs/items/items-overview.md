@@ -15,7 +15,7 @@ Equipment items (weapons, armor, and shields) have specialized mechanics detaile
 
 You can generate items quickly using the built-in Item Creator:
 
-1. Open **Open MMORPG → Develop → Item Creator**.
+1. Open **Tools → Open MMORPG → Develop → Item Creator**.
 2. Select your desired **Item Type**.
 3. Fill in the title, description, icon sprite, and drop model prefab.
 4. Click **Create** to automatically instantiate and register the asset.

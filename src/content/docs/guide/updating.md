@@ -31,7 +31,7 @@ For most releases, import the new version exactly the way you installed the firs
 Accept the dependency prompt (**Install/Upgrade**) so the Unity packages the kit depends on
 are brought up to the versions it now needs.
 
-Run **Open MMORPG → Install → Import Project Settings** again only when the release notes say
+Run **Tools → Open MMORPG → Install → Import Project Settings** again only when the release notes say
 the project settings changed. It replaces your input, physics, tag, layer, quality and time
 settings, so any changes you made to those are lost.
 

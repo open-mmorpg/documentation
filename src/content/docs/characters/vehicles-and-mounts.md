@@ -13,7 +13,7 @@ Open MMORPG includes complete support for player-rideable mounts (horses, beasts
 
 You can generate mount and vehicle prefabs using the **Vehicle Entity Creator**:
 
-1. Open **Open MMORPG → Develop → Vehicle Entity Creator (3D)**.
+1. Open **Tools → Open MMORPG → Develop → Vehicle Entity Creator (3D)**.
 2. Assign your rigged mount mesh or vehicle model.
 3. Configure the title, movement type (Character Controller or Rigidbody), and default speeds.
 4. Click **Create Entity**.

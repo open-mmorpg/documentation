@@ -88,7 +88,7 @@ folders, the same way a Resources Folder Game Database does.
 
 ## The Game Database window
 
-**Open MMORPG → Develop → Game Database** opens a window for managing a Game Database's
+**Tools → Open MMORPG → Develop → Game Database** opens a window for managing a Game Database's
 contents. When it opens, it asks which Game Database to edit. To switch to another one,
 close the window and open it again. The **Open Manager** button at the bottom of a Game
 Database's Inspector does the same thing for that database.

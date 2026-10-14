@@ -44,7 +44,7 @@ Everything lands in `Assets/OpenMMORPG`. Keep your own work outside that folder,
 ## 3. Import the project settings
 
 The kit expects particular input axes, physics settings, tags, layers and quality levels.
-Choose **Open MMORPG → Install → Import Project Settings**. The dialog names the files it
+Choose **Tools → Open MMORPG → Install → Import Project Settings**. The dialog names the files it
 replaces:
 
 - `ProjectSettings/DynamicsManager.asset`
@@ -86,7 +86,7 @@ Open MMORPG is an MMO framework, and the demo runs the way a live game does: as 
 
 Building the demo map server is completely automated:
 
-1. In the top menu, choose **Open MMORPG → Demo → Build Demo Map Server** (or open **Open MMORPG → Demo → Welcome** and click **Build Demo Map Server**).
+1. In the top menu, choose **Tools → Open MMORPG → Demo → Build Demo Map Server** (or open **Tools → Open MMORPG → Demo → Welcome** and click **Build Demo Map Server**).
 2. Unity will automatically compile the demo scenes directly into `builds/OpenMMORPG.exe`.
 
 You do not need to switch build platforms, configure build profiles, or manually create folders.

@@ -34,8 +34,8 @@ A gameplay system or server functionality works when pressing Play in the Unity 
 The Unity editor compiles all code by default. Standalone builds switch features on or off based on define symbols (such as `EXCLUDE_SERVER_CODES`).
 
 ### Solution:
-* Check your build target switches under **Open MMORPG → Build → Target** (see [Before you build](../guide/before-you-build.md)).
-* Run **Validate Game Data And Prefabs** under **Open MMORPG → Build → Asset Tools**.
+* Check your build target switches under **Tools → Open MMORPG → Build → Target** (see [Before you build](../guide/before-you-build.md)).
+* Run **Validate Game Data And Prefabs** under **Tools → Open MMORPG → Build → Asset Tools**.
 
 ---
 

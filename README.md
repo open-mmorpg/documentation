@@ -49,7 +49,7 @@ The sidebar is generated from the folders. Order the pages in a section with
     as raw text on GitHub. For a warning, use a blockquote that opens with a bold sentence.
 - **Give every image alt text** that says what it shows.
 - **Name things as the editor does.** Menu paths in bold with arrows
-  (**Open MMORPG → Develop → Game Database**), and field names as the Inspector shows them
+  (**Tools → Open MMORPG → Develop → Game Database**), and field names as the Inspector shows them
   (**Override Exe Path**).
 
 ## Screenshots

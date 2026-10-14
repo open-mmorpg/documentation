@@ -13,7 +13,7 @@ Non-Player Characters (NPCs) populate towns and outposts, serving as quest giver
 
 You can generate NPC prefabs using the **NPC Entity Creator**:
 
-1. Open **Open MMORPG → Develop → Npc Entity Creator (3D)**.
+1. Open **Tools → Open MMORPG → Develop → Npc Entity Creator (3D)**.
 2. Assign your 3D character mesh or prefab.
 3. Configure the title, nameplate height, and interaction radius.
 4. Click **Create Entity**.

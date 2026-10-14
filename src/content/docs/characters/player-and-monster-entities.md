@@ -18,7 +18,7 @@ This separation keeps networking clean: clients and servers look up game data by
 
 Open MMORPG includes an automated editor tool that configures a rigged 3D humanoid model into a fully functional character prefab in seconds.
 
-1. Open **Open MMORPG → Develop → Character Entity Creator (3D)**.
+1. Open **Tools → Open MMORPG → Develop → Character Entity Creator (3D)**.
 2. In the creator window:
    * **Source Object**: Drag your humanoid 3D model FBX or prefab.
    * **Entity Type**: Choose **Player Character Entity** or **Monster Character Entity**.
@@ -108,7 +108,7 @@ A monster entity carries AI components that dictate how it roams and attacks:
 
 Entities and game data assets will not appear in-game until registered in your game database:
 
-1. Open your Game Database asset (or open **Open MMORPG → Develop → Game Database**).
+1. Open your Game Database asset (or open **Tools → Open MMORPG → Develop → Game Database**).
 2. Add your `PlayerCharacter` and `MonsterCharacter` assets to the **Characters** list.
 3. Add your `PlayerCharacterEntity` prefabs to **Player Character Entities**.
 4. Add your `MonsterCharacterEntity` prefabs to **Monster Character Entities**.

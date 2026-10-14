@@ -10,13 +10,13 @@ Some of the kit's code is switched on or off when your game is compiled, using U
 when you press Play can still be missing from a build made with the wrong switches, and
 nothing warns you. Check this page before you build.
 
-All the switches are under **Open MMORPG → Build**. Each one changes the define symbols of
+All the switches are under **Tools → Open MMORPG → Build**. Each one changes the define symbols of
 the platform your project is set to build for (the active platform in **Build Profiles**),
 and Unity then recompiles. Switching platform later? Run the switch again for the new one.
 
 ## Build targets
 
-**Open MMORPG → Build → Target** has three choices:
+**Tools → Open MMORPG → Build → Target** has three choices:
 
 | Menu item | Use it for | What it changes |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ through Unity's Addressables system. With Addressables you can ship a small clie
 download content later, but it adds a build step of its own.
 
 The kit's project settings start with Addressables **off**: they set `DISABLE_ADDRESSABLES`
-for desktop builds. The switches are under **Open MMORPG → Build → Addressables**:
+for desktop builds. The switches are under **Tools → Open MMORPG → Build → Addressables**:
 
 - **Enable Addressables** / **Disable Addressables** turn Addressables support on or off.
 - **Exclude Prefab Refs** / **Include Prefab Refs** decide whether direct prefab references
@@ -70,7 +70,7 @@ for desktop builds. The switches are under **Open MMORPG → Build → Addressab
 
 ## Checking your data
 
-**Open MMORPG → Build → Asset Tools** has two checks worth running before a release build:
+**Tools → Open MMORPG → Build → Asset Tools** has two checks worth running before a release build:
 
 - **Validate Game Data And Prefabs** runs the validation step on every game data asset and
   game database in the project, and fixes up anything outdated or inconsistent. It logs each
@@ -89,7 +89,7 @@ described in [Getting started](./getting-started.md#6-build-the-map-server).
 
 ## Server-only scenes
 
-**Open MMORPG → Build → Scenes → Bake Server Scene** strips everything only a player needs
+**Tools → Open MMORPG → Build → Scenes → Bake Server Scene** strips everything only a player needs
 from the scene you have open: terrains, renderers, animators and 3D text. A map scene made
 this way loads faster on a server and uses less memory.
 

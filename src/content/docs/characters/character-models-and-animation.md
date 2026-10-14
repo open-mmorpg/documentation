@@ -33,7 +33,7 @@ Open MMORPG decouples character networking and combat logic from the underlying 
 * **Hurt / Dead Clips**: Hit-reactions, stagger animations, and death collapses.
 * **Default Weapon Mount**: Bone transforms where equipped weapons (right hand, left hand, shield, back) attach.
 
-> **Testing in Editor:** Use **Open MMORPG → Develop → Test Playable Character Model Animation** to preview clips and blend states directly in the scene view while working on your character prefabs.
+> **Testing in Editor:** Use **Tools → Open MMORPG → Develop → Test Playable Character Model Animation** to preview clips and blend states directly in the scene view while working on your character prefabs.
 
 ---
 

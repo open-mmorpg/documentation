@@ -13,7 +13,7 @@ Open MMORPG is guided by the **Three S's**: **Scalability**, **Stability**, and 
 
 Open MMORPG includes an in-editor package management window:
 
-1. In the Unity top menu, open **Open MMORPG → Develop → Addon Manager**.
+1. In the Unity top menu, open **Tools → Open MMORPG → Develop → Addon Manager**.
 2. The window lists all official and community addons available for your installed version of the kit.
 
 ---
