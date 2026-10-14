@@ -19,7 +19,7 @@ You can log in, select your character, and click **Start Game**, but the game ge
 In MMO mode, maps run as separate server processes launched from `builds/OpenMMORPG.exe`. When you modify character classes, items, skills, or scenes, the map server does not know about the changes until it is rebuilt.
 
 ### Solution:
-1. Rebuild the map server executable as described in [Getting Started](../guide/getting-started.md#6-build-the-map-server).
+1. Rebuild the map server executable as described in [Getting Started](../guide/getting-started.md#7-build-the-map-server).
 2. If playing in the editor, ensure the **Override Exe Path** on the `MapSpawnNetworkManager` in `00Init` points to your newly compiled executable.
 
 ---

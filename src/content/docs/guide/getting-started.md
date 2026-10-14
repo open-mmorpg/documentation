@@ -17,11 +17,13 @@ character you made yourself. Most of the time it takes is Unity importing and bu
 
 ## 1. Create a project
 
-In Unity Hub, create a new project from the **Universal 3D** template.
+In Unity Hub, create a new project from the **Universal 3D** template, or from **High
+Definition 3D** if you want HDRP.
 
-Open MMORPG renders with the Universal Render Pipeline (URP). Importing the kit into a project
-made from another template still works, because the import adds URP for you, but the kit's
-graphics settings assume a URP project, so starting from Universal 3D saves you a round of fixes.
+Open MMORPG runs on the Universal Render Pipeline (URP) or the High Definition Render Pipeline
+(HDRP). The demo's content ships as URP, and [step 3](#3-choose-your-render-pipeline) installs
+the HDRP version if that is what the project uses. Importing the kit into a project made from
+another template still compiles, because the import adds URP for you.
 
 ## 2. Import the kit
 
@@ -41,7 +43,22 @@ choose **Import**.
 Everything lands in `Assets/OpenMMORPG`. Keep your own work outside that folder, so that
 [updating the kit](./updating.md) can never overwrite it.
 
-## 3. Import the project settings
+## 3. Choose your render pipeline
+
+A URP project needs nothing here: the demo's materials, shaders, scenes and lights are already
+the URP versions.
+
+In an HDRP project, a **Render Pipeline Content** window opens after the import. Press
+**Install HDRP content**. It replaces the demo's pipeline-specific files with their HDRP versions
+(shaders, materials, scenes, prefabs with lights or cameras, and a few scripts) and removes the
+URP-only ones. Any of those files you had edited are copied to `OpenMMORPG_PipelineBackups`
+beside `Assets` first. When it has finished it offers to remove the URP packages the import added,
+which HDRP does not need.
+
+**Tools → Open MMORPG → Install → Render Pipeline Content** reopens the window later, to see which
+version is installed or to switch pipelines. Your own files, and the kit's code, are never touched.
+
+## 4. Import the project settings
 
 The kit expects particular input axes, physics settings, tags, layers and quality levels.
 Choose **Tools → Open MMORPG → Install → Import Project Settings**. The dialog names the files it
@@ -59,7 +76,7 @@ Choose **Import Settings**, then **Import** in the window Unity shows next.
 > **Do this on a new project.** Those six files are replaced outright, so any input, layer,
 > tag or quality changes you had made yourself are lost.
 
-## 4. Meet the demo
+## 5. Meet the demo
 
 The demo lives in `Assets/OpenMMORPG/Demo`. It is a small island with a village, three enemy
 families, wildlife, a rideable horse and a dungeon. It has three classes (Warrior, Ranger and
@@ -72,13 +89,13 @@ Mage), quests, harvesting, crafting and an inn. Its four scenes, in the order th
 | `DemoMap` | The island, Verdant Isle. |
 | `DemoDungeon` | The Cultist Crypt, reached through the crypt door in the hills. |
 
-## 5. Add the scenes to the build
+## 6. Add the scenes to the build
 
 For the Verdant Isle demo, the demo build profile already contains the required scenes. If you want to check them or add your own scenes, open **File → Build Profiles** and select **Scene List** at the top left. Drag the scenes from `Assets/OpenMMORPG/Demo/Scenes` into the list, and make sure `00Init` is at the top. The game always starts from the first scene in the list.
 
 ![The Build Profiles window with Scene List selected, listing the demo's four scenes with 00Init first.](./images/getting-started/scene-list.png)
 
-## 6. Build the map server
+## 7. Build the map server
 
 Open MMORPG is an MMO framework, and the demo runs the way a live game does: as several servers working together. When you press Play on `00Init`, the editor starts the login, central, database and map-spawn servers, and then the game client. Every map runs as an independent server process of its own, launched by the map-spawn server from a compiled binary of your project located at `builds/OpenMMORPG.exe`.
 
@@ -107,7 +124,7 @@ When you move beyond the demo to build your own game:
 
 ![The Map Spawn Network Manager in 00Init, with Spawn Exe Path and Override Exe Path highlighted, both set to ./builds/OpenMMORPG.exe.](./images/getting-started/override-exe-path.png)
 
-## 7. Play
+## 8. Play
 
 Open `Assets/OpenMMORPG/Demo/Scenes/00Init` and press **Play**.
 

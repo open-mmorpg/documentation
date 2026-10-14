@@ -57,8 +57,14 @@ ordinary import leaves you with duplicate-definition errors.
 
 ## After updating
 
+- **HDRP projects: install the HDRP content again.** The kit's own files are the URP version, so
+  an update puts the URP versions of the demo's materials, shaders, scenes and lights back. The
+  **Render Pipeline Content** window opens by itself when the import finishes (or use
+  **Tools → Open MMORPG → Install → Render Pipeline Content**); press **Install HDRP content**. Files
+  you had edited are backed up to `OpenMMORPG_PipelineBackups` first. After a clean update the
+  URP packages the import adds are back too, and the window offers to remove them again.
 - If your game uses MMO mode, **rebuild your map server**. A build made before the update
   still contains the old kit, and the editor and the server have to agree. See
-  [Getting started](./getting-started.md#6-build-the-map-server).
+  [Getting started](./getting-started.md#7-build-the-map-server).
 - Check the console for warnings about obsolete fields or settings. Releases that rename
   something say so in their notes.

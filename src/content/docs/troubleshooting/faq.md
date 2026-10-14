@@ -15,10 +15,10 @@ Camera zoom sensitivity is controlled on the **Gameplay Camera** component. Sele
 ---
 
 ### Why do materials render magenta / pink on mobile or Android?
-Open MMORPG is built natively for the **Universal Render Pipeline (URP)**.
-1. Open **Project Settings → Graphics**.
-2. Ensure **Default Render Pipeline** is set to a valid URP Asset (e.g. `DemoURP` or your custom URP asset).
-3. Open **Project Settings → Quality** and ensure every quality tier references your URP Pipeline asset.
+The demo's materials are made for one render pipeline, and pink means they do not match the project's.
+1. Open **Project Settings → Graphics** and check which pipeline asset is the **Default Render Pipeline**: a URP asset (e.g. `DemoURP` or your own) or an HDRP asset.
+2. Open **Project Settings → Quality** and ensure every quality tier uses a pipeline asset of that same kind.
+3. Open **Tools → Open MMORPG → Install → Render Pipeline Content**. If it says the demo content is for the other pipeline, press **Install** for yours.
 
 ---
 

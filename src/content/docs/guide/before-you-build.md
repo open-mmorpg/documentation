@@ -85,7 +85,7 @@ In an MMO the client and the servers must be built from the same project state. 
 character, monster, item and scene is identified by ID, and a server built before a change
 doesn't know about it. If players can't enter a map after you change content, rebuild the
 server first. While you work in the editor, that means rebuilding the map server, as
-described in [Getting started](./getting-started.md#6-build-the-map-server).
+described in [Getting started](./getting-started.md#7-build-the-map-server).
 
 ## Server-only scenes
 
