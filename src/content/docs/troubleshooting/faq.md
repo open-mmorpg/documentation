@@ -23,7 +23,7 @@ The demo's materials are made for one render pipeline, and pink means they do no
 ---
 
 ### Can I build an offline or singleplayer game with Open MMORPG?
-**Yes.** Open MMORPG includes an **Offline-LAN** mode where host and client execute within a single runtime instance. Run **Tools → Open MMORPG → Build → Target → Setup For Offline-Lan Build** to configure your project symbols for standalone play.
+**Yes.** Open MMORPG includes an **Offline-LAN** mode where host and client execute within a single runtime instance. To try it in the demo right away, open `Assets/OpenMMORPG/Demo/Scenes/00Init-Singleplayer` and press **Play** (it loads `01Home-Singleplayer` and `DemoMap` locally without needing a map server build). When building a standalone player, run **Tools → Open MMORPG → Build → Target → Setup For Offline-Lan Build** and put `00Init-Singleplayer` (or your own offline init scene) at the top of the **Scene List**.
 
 ---
 

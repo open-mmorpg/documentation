@@ -24,8 +24,8 @@ an asset it points to. That covers:
 
 There is one Game Instance per game. It lives in your first scene, and it carries on
 through every scene the game loads after that. In the demo it is the prefab
-`Assets/OpenMMORPG/Demo/Prefabs/GameInstance.prefab`, placed in the `00Init` scene. Open the
-prefab to see the demo's configuration.
+`Assets/OpenMMORPG/Demo/Prefabs/GameInstance.prefab`, placed in the `00Init` and
+`00Init-Singleplayer` scenes. Open the prefab to see the demo's configuration.
 
 ![The top of the demo's Game Instance in the Inspector: the Gameplay Systems and Gameplay Objects sections.](./images/game-instance/inspector.png)
 
@@ -168,5 +168,5 @@ fields are optional. When they're empty, every platform uses the PC prefab.
 ### Home scene
 
 The home scene is where players log in and create and choose characters. The demo's is
-`01Home`. Set your own in **Home Scene**, with optional separate versions for mobile and
-console players.
+`01Home` (and `01Home-Singleplayer` in `00Init-Singleplayer`). Set your own in **Home Scene**,
+with optional separate versions for mobile and console players.

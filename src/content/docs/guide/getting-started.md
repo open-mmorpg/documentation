@@ -80,12 +80,15 @@ Choose **Import Settings**, then **Import** in the window Unity shows next.
 
 The demo lives in `Assets/OpenMMORPG/Demo`. It is a small island with a village, three enemy
 families, wildlife, a rideable horse and a dungeon. It has three classes (Warrior, Ranger and
-Mage), quests, harvesting, crafting and an inn. Its four scenes, in the order the game uses them:
+Mage), quests, harvesting, crafting and an inn. Its scenes, in `Assets/OpenMMORPG/Demo/Scenes`,
+let you run the island either on the kit's MMO servers or in local singleplayer mode:
 
 | Scene | What it does |
 | --- | --- |
-| `00Init` | Starts everything. In the editor it also starts the servers. Always the first scene. |
-| `01Home` | Login, channel choice, and character creation and selection. |
+| `00Init` | Starts the MMO flow. In the editor it also starts the servers. First scene for MMO builds. |
+| `01Home` | Login, channel choice, and character creation and selection for MMO mode. |
+| `00Init-Singleplayer` | Starts the singleplayer (offline/LAN) flow, with no map server build needed. |
+| `01Home-Singleplayer` | Character selection and creation for singleplayer mode. |
 | `DemoMap` | The island, Verdant Isle. |
 | `DemoDungeon` | The Cultist Crypt, reached through the crypt door in the hills. |
 
@@ -97,7 +100,9 @@ For the Verdant Isle demo, the demo build profile already contains the required 
 
 ## 7. Build the map server
 
-Open MMORPG is an MMO framework, and the demo runs the way a live game does: as several servers working together. When you press Play on `00Init`, the editor starts the login, central, database and map-spawn servers, and then the game client. Every map runs as an independent server process of its own, launched by the map-spawn server from a compiled binary of your project located at `builds/OpenMMORPG.exe`.
+Open MMORPG is an MMO framework, and the demo's MMO mode runs the way a live game does: as several servers working together. When you press Play on `00Init`, the editor starts the login, central, database and map-spawn servers, and then the game client. Every map runs as an independent server process of its own, launched by the map-spawn server from a compiled binary of your project located at `builds/OpenMMORPG.exe`.
+
+> **Testing in singleplayer?** If you only want to try the island locally in singleplayer mode (`00Init-Singleplayer`), you do not need to build the map server—skip straight to [step 8](#8-play).
 
 ### One-Click Demo Build
 
@@ -126,6 +131,8 @@ When you move beyond the demo to build your own game:
 
 ## 8. Play
 
+### MMO mode (`00Init`)
+
 Open `Assets/OpenMMORPG/Demo/Scenes/00Init` and press **Play**.
 
 1. **Pick a server.** The list has one entry, **Local Server**: the servers your editor just
@@ -142,6 +149,14 @@ Open `Assets/OpenMMORPG/Demo/Scenes/00Init` and press **Play**.
    launches a map server for each of the demo's two maps, each in a window of its own, and
    the client joins the island a few seconds later. Leave those windows open. They close
    when you stop playing.
+
+### Singleplayer mode (`00Init-Singleplayer`)
+
+To test without running the MMO servers or building the map server, open
+`Assets/OpenMMORPG/Demo/Scenes/00Init-Singleplayer` and press **Play**. It loads
+`01Home-Singleplayer` straight at character selection, where you can create a character and
+choose **Start Game** to enter `DemoMap` locally. Singleplayer characters and world state are
+saved as `.sav` files under `Application.persistentDataPath`.
 
 ![The demo's login screen: the Open MMORPG title over a sunset valley, with the Login panel in the middle.](./images/getting-started/login.jpg)
 

@@ -49,7 +49,8 @@ Servers run on desktop platforms only: Windows, macOS and Linux.
 Open **File → Build Profiles** and check the **Scene List** before every build:
 
 - **Your first scene must be at the top.** It holds the [Game Instance](./game-instance.md)
-  and starts everything else. In the demo that is `00Init`.
+  and starts everything else. In the demo that is `00Init` (or `00Init-Singleplayer` for a
+  single-player build).
 - **Every scene the game can load must be in the list**: the home scene, and every map that
   a Map Info in your [game database](./game-database.md) points to. A map missing from the
   list can't be loaded, by the client or by a map server.
