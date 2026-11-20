@@ -5,46 +5,59 @@ sidebar:
   order: 1
 ---
 
-Open MMORPG is architected from the ground up as a distributed, high-concurrency multiplayer server cluster. Rather than running the entire virtual world inside a single monolithic process, responsibilities are partitioned across specialized server roles.
+Open MMORPG runs an MMO as several servers working together. Rather than running the entire virtual world inside a single process, responsibilities are split across server roles, and every map runs as a server process of its own.
 
 ---
 
 ## Server Roles Overview
 
+The ports below are the ones the demo's **MMOServerInstance** prefab uses. All of them are LiteNetLib (UDP). With WebSockets turned on, the login, central and map servers use WebSockets over TCP instead (see [Server Configuration and CLI Arguments](./server-configuration-and-cli.md)).
+
 ```
-                                 [ Game Clients ]
-                                  │            │
-            ┌─────────────────────┘            └──────────────────────┐
-            ▼                                                         ▼
-    [ Login Server ] (Port 5002)                               [ Central Server ] (Port 5000)
-            │                                                         │
-            │ (Cluster Auth)                                          │ (Cluster Management)
-            └─────────────────────┬───────────────────────────────────┘
-                                  ▼
-                         [ Cluster Bus (Port 6000) ]
-                                  │
-         ┌────────────────────────┼────────────────────────┐
-         ▼                        ▼                        ▼
- [ Database Server ]     [ Map Spawn Server ]        [ Map Server 1 ] (Island)
-    (Port 5003)             (Port 5001)             [ Map Server 2 ] (Dungeon)
-  (SQLite / MySQL)          │                       [ Map Server N ] (...)
-                            └── Spawns Processes ──►   (Ports 8000+)
+                        [ Game client ]
+                         │           │
+        login and        │           │   gameplay
+        characters       ▼           ▼
+  ┌─ one process ──────────────┐   [ Map servers ]  from port 8000
+  │ [ Login server ]   7500    │     8000  VerdantIsle
+  │ [ Central server ]         │     8001  CultistCrypt
+  │     cluster port   6010 ◄──┼──── every map server registers here
+  └────────────────────────────┘
+                ▲
+                │ registers, receives "start this map" requests
+  [ Map spawn server ] ── starts map server processes ──► [ Map servers ]
+
+  [ Database server ]  6100 ◄── the other servers send their database requests here
+                                (SQLite or MySQL)
 ```
+
+The game client only connects to the login server and to map servers. Everything else stays between your servers.
 
 ### 1. Central Server
-The cluster coordinator. It tracks active channels, monitors connected client sessions, manages global chat, routes cross-map whispers, and brokers private instance dungeon requests.
+The cluster coordinator. It opens the **cluster port** that the login, map spawn and map servers connect to, and through it:
+
+* keeps the channel list,
+* knows which map servers are running and which players are online on each of them,
+* passes chat, party and guild updates from one map server to the others,
+* asks a map spawn server to start a map server when an instance dungeon is needed.
+
+Central also listens on its own port (`7000` in the demo), but nothing in the kit connects to it.
 
 ### 2. Login Server
-Handles account authentication, user registrations, password hashing, and token validation. By keeping the Login Server isolated from the Central Server, high authentication spikes during game launches cannot exhaust resources required for live gameplay.
+The server players connect to first. It handles login, registration and logout, lists the channels, and lists, creates, deletes and selects characters. When a character is selected it tells the client which map server to connect to.
+
+The login server reads central's channels and cluster connections directly, so it must run in the **same process** as the central server. Login spikes are handled by a queue instead: at most `maxConcurrentRequest` logins (150 by default) are processed at once, and the rest wait their turn.
 
 ### 3. Database Server
-Manages persistent character data, inventory bags, bank storage, guild rosters, and player buildings. In Open MMORPG, this role is enhanced with a **Sharded Database Network Manager** supporting in-memory caching and throttled writes (see [Database Systems](./database-systems.md)).
+Reads and writes persistent data for the other servers: accounts, characters, inventory, storage, parties, guilds, mail and buildings. It keeps a cache of that data in memory and can defer character saves so that many saves arriving at once are spread out (see [Database Systems](./database-systems.md)).
+
+Passwords are checked and hashed here, not in the login server. The default `DefaultDatabaseUserLogin` stores passwords as MD5 hashes; its own code comment recommends replacing it with a stronger scheme for a live game.
 
 ### 4. Map Spawn Server
-A process supervisor running on each server host machine. When player populations grow or when players request private dungeons, the Map Spawn Server launches new dedicated `OpenMMORPG.exe` (or Linux binary) child processes, assigns them network ports, and registers them with the Central Server.
+Starts map server processes on its machine. When it has registered with central, it starts a map server for every map in its list on every channel in its list (in the demo, `VerdantIsle` and `CultistCrypt` on channel `1`), and starts it again if it exits. When central asks for an instance dungeon, it starts another one. Each map server gets the next free port from **Start Port** (`8000`) upward. It does not start or stop map servers as the number of players changes.
 
 ### 5. Map Servers
-The authoritative game simulation servers. Each map server runs the gameplay scene for a specific zone, processing movement via the **Unity Jobs + Burst Movement Pipeline**, evaluating combat damage, ticking monster AI, and broadcasting network snapshots.
+The authoritative game simulation servers. Each map server is a Unity build running one map's scene for one channel: it moves the entities, resolves combat, runs monster AI and sends each player the entities around them. Which entities a player can see is worked out on a grid by a Burst-compiled job.
 
 ---
 
@@ -52,15 +65,17 @@ The authoritative game simulation servers. Each map server runs the gameplay sce
 
 A **Channel** represents a complete parallel mirror of world maps:
 * Characters choose their preferred channel (e.g., Channel 1, Channel 2) at the character selection screen.
-* Channels distribute player density across separate map processes without splitting guild or chat connectivity.
-* Channel capacity limits and timeout durations are configured in `ServerConfig` (see [Server Configuration and CLI](./server-configuration-and-cli.md)).
+* Each channel has its own map servers, so channels spread players across separate processes. Chat, parties and guilds still work across channels, because central passes them between all map servers.
+* The channel list and each channel's player limit are set on the **Central Network Manager** (**Channels** and **Default Channel Max Connections**), or with `channels` and `defaultChannelMaxConnections` in `Config/serverConfig.json`. Which channels a map spawn server starts maps for is its **Spawning Channel Ids** list, or `spawnChannels` (see [Server Configuration and CLI](./server-configuration-and-cli.md)).
 
 ---
 
 ## Instance Dungeons
 
-When a party enters an instanced dungeon:
-1. The party leader interacts with the dungeon door or warp portal.
-2. The Central Server instructs the Map Spawn Server to allocate a private, dedicated map instance with a unique `instanceId`.
-3. Party members warp into the isolated instance.
-4. When the party leaves or the instance expiration timer finishes, the spawner cleanly terminates the child map process, freeing memory.
+When a character enters an instance dungeon through a warp portal whose **Warp Portal Type** is **Enter Instance**:
+1. If the character leads a party, party members within **Join Instance Map Distance** (20 m by default, on the **Game Instance**) go along. A party member who is not the leader cannot open an instance.
+2. The map server asks central for a new instance of that map. Central gives it a unique instance id and asks a map spawn server to start a map server for it.
+3. The characters are saved and moved to the new map server.
+4. An instance map server shuts itself down 30 seconds after its last player leaves.
+
+The demo's crypt is not an instance: `CultistCrypt` is an ordinary map that every player shares.

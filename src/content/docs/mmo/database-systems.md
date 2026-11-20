@@ -1,11 +1,11 @@
 ---
-title: Database Systems and Sharding
-description: Configuring SQLite, MySQL, and PostgreSQL backends, along with Open MMORPG's high-concurrency Sharded Database Network Manager.
+title: Database Systems
+description: Configuring SQLite, MySQL, and PostgreSQL backends, and how the database server caches data and spreads out character saves in Open MMORPG.
 sidebar:
   order: 3
 ---
 
-Player persistence in Open MMORPG is decoupled through a dedicated database network layer. The framework supports embedded SQLite databases out of the box for instant development, and scales to MySQL or PostgreSQL for production live deployments.
+Player persistence in Open MMORPG goes through a dedicated database server that the other servers send their requests to. The kit supports SQLite out of the box for instant development, and MySQL for production deployments. PostgreSQL is not available in Unity builds.
 
 ---
 
@@ -13,44 +13,65 @@ Player persistence in Open MMORPG is decoupled through a dedicated database netw
 
 | Database | Best For | Setup Overhead | Configuration |
 | :--- | :--- | :--- | :--- |
-| **SQLite (Default)** | Local development, single-machine testing, demo playthroughs | **Zero setup.** Ships pre-configured; database file created automatically in project root. | Default configuration (`mmorpgtemplate.sqlite3`). |
-| **MySQL / MariaDB** | Production multi-server live MMO deployments | Requires installing MySQL Server 8.0+ or MariaDB. | Set MySQL connection string in Database Network Manager. |
-| **PostgreSQL** | Enterprise production deployments requiring advanced replication | Requires PostgreSQL Server 14+. | Set PostgreSQL connection string. |
+| **SQLite (Default in the editor)** | Local development, single-machine testing, demo playthroughs | **Zero setup.** Ships with the kit; the server creates the database file and its tables. | `mmorpgtemplate.sqlite3`: in the project folder in the editor, and `sqliteDbPath` in `Config/sqliteConfig.json` in a build. |
+| **MySQL / MariaDB** | Production multi-server live MMO deployments | Requires a MySQL or MariaDB server, and importing `MMO/SQLs/mysql_main.sql` once. | The **MySQLDatabase** object in the editor, `Config/mySqlConfig.json` in a build. |
+| **PostgreSQL** | Deployments that already run PostgreSQL | Requires a PostgreSQL server. | Not available in Unity builds (see below). |
 
 ---
 
 ## 2. Zero-Setup SQLite (Development Standard)
 
-In upstream MMORPG Kit, developers were required to install and maintain an external MySQL instance before running the project in the editor.
+The demo's `00Init` scene uses SQLite. When you press Play on `00Init`, the database server opens `mmorpgtemplate.sqlite3` in your project folder, creating the file and its tables if they don't exist yet. No database servers or third-party drivers need to be installed.
 
-In Open MMORPG, the project ships with an embedded SQLite driver enabled by default. When you press Play on `00Init`, the Database Server initializes `mmorpgtemplate.sqlite3` directly inside your project folder. No database servers or third-party drivers need to be installed.
+Which database the editor uses is the **Database Option Index** field on **MMOServerInstance** (under **Running In Editor**). It picks an entry of the **Database Options** list on the **Database Network Manager**, a child of **MMOServerInstance**. In the demo that list is:
+
+| Index | Database |
+| :--- | :--- |
+| `0` | **MySQLDatabase** |
+| `1` | **SQLiteDatabase** |
+
+`00Init` sets **Database Option Index** to `1`, SQLite.
+
+> **A server build ignores Database Option Index.** A build reads `databaseOptionIndex` from the command line or `Config/serverConfig.json`, and without it uses the **Database** field on the **Database Network Manager**, which is **MySQLDatabase** in the demo. To run a demo database server build on SQLite, start it with `-databaseOptionIndex 1` or set `"databaseOptionIndex": 1` in `Config/serverConfig.json` (see [Server Configuration and CLI](./server-configuration-and-cli.md)).
+
+In a build, the SQLite file's location is `sqliteDbPath` in `Config/sqliteConfig.json`, `./mmorpgtemplate.sqlite3` by default, relative to the folder the server runs in. The server writes that file the first time it starts. A `sqliteDbPath` environment variable overrides it.
 
 ---
 
-## 3. Switching to MySQL or PostgreSQL for Production
+## 3. Switching to MySQL for Production
 
 When preparing for live player testing on external servers:
 
-1. Open your initialization scene (`00Init`).
-2. Select the **MMOServerInstance** GameObject.
-3. Locate the **Database Network Manager** component in the Inspector.
-4. Set **Database Option** to **MySQL** (or **PostgreSQL**).
-5. Configure the connection string:
-   * **Host / Address**: e.g., `127.0.0.1` or internal private VPC IP.
-   * **Port**: `3306` (MySQL) or `5432` (PostgreSQL).
-   * **Database Name**: e.g., `openmmorpg_live`.
+1. Create a database on your MySQL or MariaDB server and import `Assets/OpenMMORPG/MMO/SQLs/mysql_main.sql` into it. This creates the base tables. The database server applies the later schema changes itself each time it starts, but it doesn't create the base tables.
+2. Open your initialization scene (`00Init`).
+3. Select the **MySQLDatabase** object, a child of **MMOServerInstance**, and fill in its fields:
+   * **Address**: e.g., `127.0.0.1` or internal private VPC IP.
+   * **Port**: `3306`.
+   * **Db Name**: the database you imported the tables into.
    * **Username / Password**: Your database service credentials.
-6. The database manager automatically executes required schema migration tables on initial launch.
+   * **Connection String**: optional. If you fill it in, it is used instead of the fields above.
+4. Select **MMOServerInstance** and set **Database Option Index** to `0`, the position of **MySQLDatabase** in the **Database Options** list.
+5. For a server build, set `"databaseOptionIndex": 0` in `Config/serverConfig.json` (or pass `-databaseOptionIndex 0`).
+
+The first time the database server starts with MySQL, it writes the connection settings to `Config/mySqlConfig.json` (in the project folder when you play in the editor, in the folder the server runs in otherwise), and from then on reads them from that file rather than from the Inspector. Edit the file to change them, or delete it so the Inspector values are written again. Its keys are `mySqlAddress`, `mySqlPort`, `mySqlUsername`, `mySqlPassword`, `mySqlDbName` and `mySqlConnectionString`; environment variables with the same names override the file.
+
+> **PostgreSQL is not available in Unity builds.** The kit's PostgreSQL code only compiles outside Unity, so a Unity database server can't use it.
 
 ---
 
-## 4. Open MMORPG's Sharded Database Network Manager
+## 4. Caching and Deferred Character Saves
 
-High player counts in traditional MMO architectures frequently suffer from database contention: when dozens of players save inventory states or disconnect simultaneously, synchronous queries block server threads, resulting in lag spikes.
+When dozens of players save or disconnect at the same moment, writing every save straight to the database makes the database the bottleneck. The **Database Network Manager** has two features against that, both on by default.
 
-Open MMORPG introduces the **Sharded Database Network Manager** to eliminate persistence bottlenecks:
+### In-memory cache
+The database server keeps the data it has read or written in memory: characters, social data, buildings, parties, guilds, storage items and summon buffs. Reads are answered from memory when the data is there, without a database query. Tick **Disable Database Caching** on **MMOServerInstance** (or set `disableDatabaseCaching` in `Config/serverConfig.json` for a build) to turn it off.
 
-### Key Architectural Pillars:
-* **Lane-Based Concurrency**: Incoming persistence queries are distributed across parallel worker lanes based on character ID hash. Queries for separate players never block each other.
-* **Queued & Throttled Persistence**: Save operations are staged in non-blocking queues with a configurable `maxSavesPerTick` limit. Burst traffic is smoothed into steady background disk writes.
-* **In-Memory Thread-Safe Cache**: Active character snapshots are maintained in memory using `ConcurrentDictionary`. Frequent read operations (such as character inspections or party lookups) are resolved instantly without touching the disk.
+### Deferred character saves
+With **Use Deferred Character Save Scheduler** ticked, a character save from a map server updates the cache and is answered at once, and the database write is queued:
+
+* Saves of the same character that arrive while one is waiting are merged into one write.
+* A character is written at most once every **Character Save Min Interval Seconds** (20).
+* Characters are spread over **Character Save Lane Count** queues (32) by a hash of their id. Every **Character Save Tick Milliseconds** (500), the next queue in turn writes up to **Character Save Max Per Tick** (8) of its characters whose interval has passed.
+* A write that fails is tried again after **Character Save Retry Delay Seconds** (5).
+
+Before a database server build quits, it waits 30 seconds and then writes every save still queued. Stopping Play in the editor writes them too.
